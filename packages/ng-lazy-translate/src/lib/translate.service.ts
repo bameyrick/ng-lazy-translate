@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, Optional } from '@angular/core';
-import { MissingTranslationHandlerFn, TranslationKeyStore, TranslationValue } from '@qntm-code/translation-key-store';
+import { Inject, Injectable } from '@angular/core';
+import { TranslationKeyStore, TranslationValue } from '@qntm-code/translation-key-store';
 import { isEqual, isNullOrUndefined, isObject, isString } from '@qntm-code/utils';
 import {
   BehaviorSubject,
@@ -21,17 +21,10 @@ import {
   shareReplay,
   withLatestFrom,
 } from 'rxjs';
-import { Language, TranslationAssetPaths } from './models';
-import {
-  DEFAULT_LANGUAGE,
-  ENABLE_TRANSLATION_LOGGING,
-  LANGUAGES,
-  MISSING_TRANSLATION_HANDLER,
-  TRANSLATION_ASSET_PATHS,
-  USE_DEFAULT_LANGUAGE,
-} from './tokens';
+import { LazyTranslateModuleConfig } from './models';
+import { NG_LAZY_TRANSLATE_CONFIG } from './tokens';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class LazyTranslateService {
   /**
    * The current language
@@ -53,32 +46,27 @@ export class LazyTranslateService {
    */
   private readonly downloadedRequests: Record<string, Observable<Record<string, unknown> | undefined> | undefined> = {};
 
-  constructor(
-    @Inject(LANGUAGES) public readonly languages: Language[],
-    @Inject(DEFAULT_LANGUAGE) private readonly defaultLanguage: string,
-    @Inject(USE_DEFAULT_LANGUAGE)
-    private readonly useDefaultLanguage: boolean = true,
-    @Inject(TRANSLATION_ASSET_PATHS)
-    private readonly translationAssetPaths: TranslationAssetPaths,
-    @Optional()
-    @Inject(ENABLE_TRANSLATION_LOGGING)
-    readonly enableLogging: boolean = false,
-    @Optional()
-    @Inject(MISSING_TRANSLATION_HANDLER)
-    readonly missingTranslationHandler: MissingTranslationHandlerFn,
-    private readonly http: HttpClient
-  ) {
-    this.defaultLanguage$ = new BehaviorSubject<string>(this.defaultLanguage);
+  /**
+   * Config for the service
+   */
+  private readonly config: LazyTranslateModuleConfig;
+
+  constructor(@Inject(NG_LAZY_TRANSLATE_CONFIG) config: LazyTranslateModuleConfig, private readonly http: HttpClient) {
+    this.config = { useDefaultLanguage: true, enableLogging: true, ...config };
+
+    this.defaultLanguage$ = new BehaviorSubject<string>(this.config.defaultLanguage);
+
     this.language$ = new BehaviorSubject<string>(this.getValidLanguageCode(navigator.language));
+
     this.store = new TranslationKeyStore({
-      enableLogging: this.enableLogging,
-      missingTranslationHandler,
+      enableLogging: this.config.enableLogging,
+      missingTranslationHandler: this.config.missingTranslationHandler,
     });
 
     this.subscribeToLanguageChange(this.language$, this.defaultLanguage$);
     this.subscribeToLanguageChange(this.defaultLanguage$, this.language$);
 
-    if (this.enableLogging) {
+    if (this.config.enableLogging) {
       this.language$.subscribe(language => console.log(`Current language: ${language}`));
     }
   }
@@ -129,7 +117,7 @@ export class LazyTranslateService {
      * If the namespace does not exist for the language and the default language is not the same as the language attempt to
      * download the file for the default language
      */
-    if (!(await this.getNamespaceForLanguage(language, namespace)) && this.useDefaultLanguage && language !== defaultLanguage) {
+    if (!(await this.getNamespaceForLanguage(language, namespace)) && this.config.useDefaultLanguage && language !== defaultLanguage) {
       await this.getNamespaceForLanguage(defaultLanguage, namespace);
     }
 
@@ -137,7 +125,7 @@ export class LazyTranslateService {
     let result = this.store.getTranslationValue(key, language);
 
     // If the translation key value is not found and the language is not the same as the default language
-    if (!result && this.useDefaultLanguage && language !== defaultLanguage) {
+    if (!result && this.config.useDefaultLanguage && language !== defaultLanguage) {
       await this.getNamespaceForLanguage(defaultLanguage, namespace);
 
       // Attempt to get the translation key value in the default language
@@ -167,9 +155,9 @@ export class LazyTranslateService {
    * Downloads a language file for a given namespace
    */
   private downloadFile(language: string, namespace: string): Observable<Record<string, unknown> | undefined> {
-    const path = this.translationAssetPaths[`${language}.${namespace}`];
+    const path = this.config.translationAssetPaths[`${language}.${namespace}`];
 
-    if (!path && this.enableLogging) {
+    if (!path && this.config.enableLogging) {
       console.error(`File with namespace ${namespace} not found for language ${language}`);
     }
 
@@ -199,7 +187,7 @@ export class LazyTranslateService {
   }
 
   private getValidLanguageCode(language: string): string {
-    if (this.languages.map(({ code }) => code).includes(language)) {
+    if (this.config.languages.map(({ code }) => code).includes(language)) {
       return language;
     }
 
@@ -207,7 +195,7 @@ export class LazyTranslateService {
       return this.getValidLanguageCode(language.split('-')[0]);
     }
 
-    return this.defaultLanguage;
+    return this.config.defaultLanguage;
   }
 
   private flattenParams(params?: Record<string, unknown>): Record<string, unknown> | undefined {

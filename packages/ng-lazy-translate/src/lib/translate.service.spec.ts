@@ -5,7 +5,7 @@ import { delay } from '@qntm-code/utils';
 import { firstValueFrom } from 'rxjs';
 
 import { Language, TranslationAssetPaths } from './models';
-import { DEFAULT_LANGUAGE, ENABLE_TRANSLATION_LOGGING, LANGUAGES, TRANSLATION_ASSET_PATHS, USE_DEFAULT_LANGUAGE } from './tokens';
+import { NG_LAZY_TRANSLATE_CONFIG } from './tokens';
 import { LazyTranslateService } from './translate.service';
 
 const TEST_LANGUAGES: Language[] = [
@@ -27,25 +27,16 @@ describe(`LazyTranslateService`, () => {
       imports: [HttpClientTestingModule],
       providers: [
         {
-          provide: LANGUAGES,
-          useValue: TEST_LANGUAGES,
+          provide: NG_LAZY_TRANSLATE_CONFIG,
+          useValue: {
+            defaultLanguage: 'en',
+            enableLogging: false,
+            languages: TEST_LANGUAGES,
+            translationAssetPaths: TEST_ASSET_PATHS,
+            useDefaultLanguage: true,
+          },
         },
-        {
-          provide: DEFAULT_LANGUAGE,
-          useValue: 'en',
-        },
-        {
-          provide: USE_DEFAULT_LANGUAGE,
-          useValue: true,
-        },
-        {
-          provide: ENABLE_TRANSLATION_LOGGING,
-          useValue: false,
-        },
-        {
-          provide: TRANSLATION_ASSET_PATHS,
-          useValue: TEST_ASSET_PATHS,
-        },
+        LazyTranslateService,
       ],
     });
   });
@@ -63,7 +54,14 @@ describe(`LazyTranslateService`, () => {
     let errorSpy: jest.SpyInstance;
 
     beforeEach(() => {
-      TestBed.overrideProvider(ENABLE_TRANSLATION_LOGGING, { useValue: true });
+      TestBed.overrideProvider(NG_LAZY_TRANSLATE_CONFIG, {
+        useValue: {
+          defaultLanguage: 'en',
+          enableLogging: true,
+          languages: TEST_LANGUAGES,
+          translationAssetPaths: TEST_ASSET_PATHS,
+        },
+      });
 
       consoleLog = console.log;
       consoleError = console.error;
