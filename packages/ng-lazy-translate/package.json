@@ -1,0 +1,25 @@
+{
+  "name": "@qntm-code/ng-lazy-translate",
+  "version": "0.0.1",
+  "description": "Lazy loaded translation module for Angular",
+  "keywords": ["angular", "lazy", "load", "translation", "i18n", "internationalization", "messageformat"],
+  "license": "MIT",
+  "author": "Ben Meyrick<bameyrick@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bameyrick/ng-lazy-translate.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@angular/common": "^16.1.0",
+    "@angular/core": "^16.1.0",
+    "@qntm-code/translation-key-store": "^1.0.2",
+    "@qntm-code/utils": "^2.18.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}
