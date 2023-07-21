@@ -13,7 +13,6 @@ npm i @qntm-code/ng-lazy-translate
 ### 1. Create providers
 
 ```typescript
-// main.ts
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
@@ -22,7 +21,6 @@ bootstrapApplication(AppComponent, appConfig).catch(err => console.error(err));
 ```
 
 ```typescript
-// app.config.ts
 import { provideHttpClient } from '@angular/common/http';
 import { ApplicationConfig } from '@angular/core';
 import { provideLazyTranslate } from '@qntm-code/ng-lazy-translate';
@@ -89,7 +87,6 @@ export class AppModule {}
 ### 2. Import module in component
 
 ```typescript
-// app.component.ts
 import { Component } from '@angular/core';
 import { NgLazyTranslateModule } from '@qntm-code/ng-lazy-translate';
 
@@ -106,7 +103,6 @@ export class AppComponent {}
 ## Using pipe in a template
 
 ```html
-<!-- app.component.html -->
 <p>{{ 'common.hello_world' | translate }}</p>
 ```
 
@@ -151,14 +147,13 @@ Whether you use the standalone components or the module, the LazyTranslateModule
 | Option | Type   | Description                                                                  |
 | ------ | ------ | ---------------------------------------------------------------------------- |
 | key    | string | The language and translation file name. For example: `en.common` or `fr.app` |
-| value  | string | The path to the translation file.                                            |
+| value  | string | The path to the translation file. e.g `assets/i18n/en.common.json`           |
 
 ## Translation files
 
 Translation files must be in JSON format and have the following structure:
 
 ```json
-// en.common.json
 {
   "hello_world": "Hello World!"
 }
@@ -167,7 +162,6 @@ Translation files must be in JSON format and have the following structure:
 You can also use nested keys:
 
 ```json
-// en.common.json
 {
   "greetings": {
     "hello_world": "Hello World!"
