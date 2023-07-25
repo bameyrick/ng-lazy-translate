@@ -2,6 +2,16 @@
 
 Lazy loaded translation module for Angular using [messageformat](https://messageformat.github.io/).
 
+[![GitHub release](https://img.shields.io/github/release/bameyrick/ng-lazy-translate.svg)](https://github.com/bameyrick/ng-lazy-translate/releases)
+[![Tests](https://github.com/bameyrick/ng-lazy-translate/actions/workflows/tests.yml/badge.svg)](https://github.com/bameyrick/ng-lazy-translate/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/bameyrick/ng-lazy-translate/branch/main/graph/badge.svg)](https://codecov.io/gh/bameyrick/ng-lazy-translate)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bameyrick_ng-lazy-translate&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=bameyrick_ng-lazy-translate)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=bameyrick_ng-lazy-translate&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=bameyrick_ng-lazy-translate)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=bameyrick_ng-lazy-translate&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=bameyrick_ng-lazy-translate)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=bameyrick_ng-lazy-translate&metric=bugs)](https://sonarcloud.io/summary/new_code?id=bameyrick_ng-lazy-translate)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=bameyrick_ng-lazy-translate&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=bameyrick_ng-lazy-translate)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=bameyrick_ng-lazy-translate&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=bameyrick_ng-lazy-translate)
+
 ## Installation
 
 ```bash
