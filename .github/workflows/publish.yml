@@ -32,6 +32,6 @@ jobs:
         run: git config --global user.email "bameyrick@gmail.com" && git config --global user.name "Ben Meyrick"
 
       - name: Publish package on NPM 📦
-        run: cd dist/packages/ng-lazy-translate && npm version ${{github.ref_name}} --allow-same-version --allow-empty --no-git-tag-version && npm publish --dry-run
+        run: cd dist/packages/ng-lazy-translate && npm version ${{github.ref_name}} --allow-same-version --allow-empty --no-git-tag-version && npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
