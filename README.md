@@ -2,4 +2,4 @@
 
 Lazy load translation module for Angular.
 
-[See full README here](/packages/ng-lazy-translate/README.md)
+[See documentation here](/packages/ng-lazy-translate/README.md)
