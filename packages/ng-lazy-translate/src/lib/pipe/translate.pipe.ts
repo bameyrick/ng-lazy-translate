@@ -25,10 +25,10 @@ export class LazyTranslatePipe implements PipeTransform, OnDestroy {
    */
   private readonly paramsSubscription = this.params$
     .pipe(distinctUntilChanged((previous, next) => isEqual(previous, next)))
-    .subscribe(({ key, interpolateParams }) => {
+    .subscribe(({ key, interpolateParams, defaultValue }) => {
       this.unsubscribe();
 
-      this.translationSubscription = this.translateService.translate(key, interpolateParams).subscribe(value => {
+      this.translationSubscription = this.translateService.translate(key, interpolateParams, defaultValue).subscribe(value => {
         this.value = value;
 
         this.changeDetectorRef.detectChanges();
