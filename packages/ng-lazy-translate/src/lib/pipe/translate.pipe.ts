@@ -18,7 +18,7 @@ export class LazyTranslatePipe implements PipeTransform, OnDestroy {
   /**
    * An observable of the params provided from the transform
    */
-  private readonly params$ = new Subject<{ key?: string | null; interpolateParams?: Dictionary<unknown> }>();
+  private readonly params$ = new Subject<{ key?: string | null; interpolateParams?: Dictionary<unknown>; defaultValue?: string }>();
 
   /**
    * Handle the params being updated
@@ -45,25 +45,32 @@ export class LazyTranslatePipe implements PipeTransform, OnDestroy {
 
   public transform(key?: string | null, ...args: Array<Dictionary<unknown> | string>): string | undefined {
     let interpolateParams: Dictionary<unknown> | undefined;
+    let defaultValue: string | undefined;
+
+    if (args.length > 1) {
+      defaultValue = args[1] as string;
+    }
 
     if (!isNullOrUndefined(args[0])) {
-      if (isString(args[0])) {
+      const params = args[0];
+
+      if (isString(params)) {
         /** We accept objects written in the template such as {n:1}, {'n':1}, {n:'v'} which is why we might need to change it to real JSON
          * objects such as {"n":1} or {"n":"v"}
          */
-        const validArgs: string = args[0].replace(/(')?([a-zA-Z0-9_]+)(')?(\s)?:/g, '"$2":').replace(/:(\s)?(')(.*?)(')/g, ':"$3"');
+        const validArgs: string = params.replace(/(')?([a-zA-Z0-9_]+)(')?(\s)?:/g, '"$2":').replace(/:(\s)?(')(.*?)(')/g, ':"$3"');
 
         try {
           interpolateParams = JSON.parse(validArgs);
         } catch (error) {
-          throw new SyntaxError(`Incorrect parameter in TranslatePipe. Expected a valid Object, received: ${args[0]}`);
+          defaultValue = params;
         }
       } else if (isObject(args[0]) && !Array.isArray(args[0])) {
         interpolateParams = args[0] as Dictionary<unknown>;
       }
     }
 
-    this.params$.next({ key, interpolateParams });
+    this.params$.next({ key, interpolateParams, defaultValue });
 
     return this.value;
   }

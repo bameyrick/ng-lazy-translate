@@ -48,8 +48,20 @@ describe(`LazyTranslatePipe`, () => {
       expect(paramsSpy).toHaveBeenCalledWith({ key: 'test', interpolateParams: { test: 'test' } });
     });
 
-    it(`should throw a syntax error if the interpolateParams are not valid`, () => {
-      expect(() => pipe.transform('test', `{ test: 'test'`)).toThrowError(SyntaxError);
+    it(`should pass the defaultValue when interpolateParams are provided`, () => {
+      const paramsSpy = jest.spyOn((pipe as any).params$, 'next');
+
+      pipe.transform('no-value-test', `{ test: 'test' }`, 'default');
+
+      expect(paramsSpy).toHaveBeenCalledWith({ key: 'no-value-test', interpolateParams: { test: 'test' }, defaultValue: 'default' });
+    });
+
+    it(`should pass the defaultValue when interpolateParams are not provided`, () => {
+      const paramsSpy = jest.spyOn((pipe as any).params$, 'next');
+
+      pipe.transform('no-value-test', 'default');
+
+      expect(paramsSpy).toHaveBeenCalledWith({ key: 'no-value-test', defaultValue: 'default' });
     });
   });
 });
