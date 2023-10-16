@@ -75,12 +75,12 @@ export class LazyTranslateService {
     this.language$.next(this.getValidLanguageCode(language));
   }
 
-  public translate(key?: string | null, params?: Record<string, unknown>): Observable<string> {
+  public translate(key?: string | null, params?: Record<string, unknown>, defaultValue?: string): Observable<string> {
     return combineLatest([this.language$, this.defaultLanguage$]).pipe(
       distinctUntilChanged((previous, next) => isEqual(previous, next)),
       concatMap(() => (isString(key) ? of(key) : NEVER)),
       mergeMap(k => from(this.getKey(k))),
-      map(result => (isNullOrUndefined(result) ? key || '' : result(this.flattenParams(params))))
+      map(result => (isNullOrUndefined(result) ? defaultValue || key || '' : result(this.flattenParams(params))))
     );
   }
 

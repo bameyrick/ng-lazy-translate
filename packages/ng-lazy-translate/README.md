@@ -214,3 +214,31 @@ The translation service uses [messageformat](https://messageformat.github.io/) t
   ```typescript
   this.translateService.translate('common.greetings.hello_world', { name: 'John', time: '10:00' });
   ```
+
+## Default value
+
+If you want to provide a default value for when a translation is not found in any language, you can do so by passing it as the last parameter to the translate pipe or function:
+
+- Template:
+
+  ```html
+  {{ 'common.greetings.hello_world' | translate: { name: 'John', time: '10:00' }: 'Hello, this is my default string' }}
+  ```
+
+  or without values:
+
+  ```html
+  {{ 'common.greetings.hello_world' | translate: 'Hello, this is my default string' }}
+  ```
+
+- Component/Service:
+
+  ```typescript
+  this.translateService.translate('common.greetings.hello_world', { name: 'John', time: '10:00' }, 'Hello, this is my default string');
+  ```
+
+  or without values:
+
+  ```typescript
+  this.translateService.translate('common.greetings.hello_world', undefined, 'Hello, this is my default string');
+  ```
