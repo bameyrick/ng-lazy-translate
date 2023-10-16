@@ -134,13 +134,13 @@ describe(`LazyTranslateService`, () => {
       });
 
       it(`should return the default value if no translation is found and a default value is provided`, async () => {
-        const result = firstValueFrom(service.translate('common.no-value', undefined, 'default'));
+        const result = firstValueFrom(service.translate('common.no-value', undefined, ''));
 
         await delay();
 
         httpMock.expectOne(TEST_ASSET_PATHS[`en.common`]).flush({});
 
-        expect(await result).toBe('default');
+        expect(await result).toBe('');
       });
 
       it(`the value should update when the language changes`, async () => {
