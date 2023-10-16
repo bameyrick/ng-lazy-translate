@@ -80,7 +80,17 @@ export class LazyTranslateService {
       distinctUntilChanged((previous, next) => isEqual(previous, next)),
       concatMap(() => (isString(key) ? of(key) : NEVER)),
       mergeMap(k => from(this.getKey(k))),
-      map(result => (isNullOrUndefined(result) ? defaultValue || key || '' : result(this.flattenParams(params))))
+      map(result => {
+        if (isNullOrUndefined(result)) {
+          if (!isNullOrUndefined(defaultValue)) {
+            return defaultValue;
+          }
+
+          return key || '';
+        }
+
+        return result(this.flattenParams(params));
+      })
     );
   }
 
