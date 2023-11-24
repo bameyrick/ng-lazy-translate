@@ -167,8 +167,12 @@ export class LazyTranslateService {
   private downloadFile(language: string, namespace: string): Observable<Record<string, unknown> | undefined> {
     const path = this.config.translationAssetPaths[`${language}.${namespace}`];
 
-    if (!path && this.config.enableLogging) {
-      console.error(`File with namespace ${namespace} not found for language ${language}`);
+    if (!path) {
+      if (this.config.missingFileHandler) {
+        this.config.missingFileHandler(namespace, language);
+      } else if (this.config.enableLogging) {
+        console.error(`File with namespace ${namespace} not found for language ${language}`);
+      }
     }
 
     let observable = this.downloadedRequests[path];

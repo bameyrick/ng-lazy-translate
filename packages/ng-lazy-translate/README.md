@@ -55,6 +55,8 @@ export const appConfig: ApplicationConfig = {
         'fr.common': 'asset/i18n/fr/common.json',
       },
       missingTranslationHandler: (language: string, key: string) => console.error(`Custom handler: Could not find ${key} in ${language}`),
+      missingFileHandler: (namespace: string, language: string) =>
+        console.error(`Custom handler: CFile with namespace ${namespace} not found for language ${language}`),
     }),
   ],
 };
@@ -136,14 +138,15 @@ export class MyService {
 
 Whether you use the standalone components or the module, the LazyTranslateModuleConfig options are the same.
 
-| Option                    | Type                                            | Description                                                                                                  | Mandatory | Default                      |
-| ------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | --------- | ---------------------------- |
-| defaultLanguage           | string                                          | The default language to use if no language is specified                                                      | Yes       | N/A                          |
-| languages                 | [Language[]](#language)                         | The list of languages to support                                                                             | Yes       | N/A                          |
-| translationAssetPaths     | [TranslationAssetPaths](#translationassetpaths) | The list of translation assets to load. The key is the language and the translation file name.               | Yes       | N/A                          |
-| useDefaultLanguage        | boolean                                         | Whether to use the default language if the specified language is not found                                   | No        | `true`                       |
-| enableLogging             | boolean                                         | Whether to enable logging of missing translations                                                            | No        | `true`                       |
-| missingTranslationHandler | (language: string, key: string) => void         | A custom handler to use when a translation is not found. If not specified, the default handler will be used. | No        | Will console.error a message |
+| Option                    | Type                                            | Description                                                                                                       | Mandatory | Default                      |
+| ------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | --------- | ---------------------------- |
+| defaultLanguage           | string                                          | The default language to use if no language is specified                                                           | Yes       | N/A                          |
+| languages                 | [Language[]](#language)                         | The list of languages to support                                                                                  | Yes       | N/A                          |
+| translationAssetPaths     | [TranslationAssetPaths](#translationassetpaths) | The list of translation assets to load. The key is the language and the translation file name.                    | Yes       | N/A                          |
+| useDefaultLanguage        | boolean                                         | Whether to use the default language if the specified language is not found                                        | No        | `true`                       |
+| enableLogging             | boolean                                         | Whether to enable logging of missing translations                                                                 | No        | `true`                       |
+| missingTranslationHandler | (language: string, key: string) => void         | A custom handler to use when a translation is not found. If not specified, the default handler will be used.      | No        | Will console.error a message |
+| missingFileHandler        | (namespace: string, language: string) => void   | A custom handler to use when a translation file is not found. If not specified, the default handler will be used. | No        | Will console.error a message |
 
 ## Language
 
