@@ -56,7 +56,7 @@ export class LazyTranslateService {
 
     this.defaultLanguage$ = new BehaviorSubject<string>(this.config.defaultLanguage);
 
-    this.language$ = new BehaviorSubject<string>(this.getValidLanguageCode(navigator.language));
+    this.language$ = new BehaviorSubject<string>(this.getValidLanguageCode(navigator?.language || this.config.defaultLanguage));
 
     this.store = new TranslationKeyStore({
       enableLogging: this.config.enableLogging,
