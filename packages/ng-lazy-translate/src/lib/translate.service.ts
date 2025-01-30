@@ -21,7 +21,7 @@ import {
   shareReplay,
   withLatestFrom,
 } from 'rxjs';
-import { LazyTranslateModuleConfig } from './models';
+import { LazyTranslateModuleConfig, TranslationAssetPaths } from './models';
 import { NG_LAZY_TRANSLATE_CONFIG } from './tokens';
 
 @Injectable()
@@ -51,8 +51,14 @@ export class LazyTranslateService {
    */
   private readonly config: LazyTranslateModuleConfig;
 
+  private readonly translationAssetPaths = new Map<string, string>();
+
   constructor(@Inject(NG_LAZY_TRANSLATE_CONFIG) config: LazyTranslateModuleConfig, private readonly http: HttpClient) {
     this.config = { useDefaultLanguage: true, enableLogging: true, ...config };
+
+    if (this.config.translationAssetPaths) {
+      this.addTranslationPaths(this.config.translationAssetPaths);
+    }
 
     this.defaultLanguage$ = new BehaviorSubject<string>(this.config.defaultLanguage);
 
@@ -71,6 +77,13 @@ export class LazyTranslateService {
     if (this.config.enableLogging) {
       this.language$.subscribe(language => console.log(`Current language: ${language}`));
     }
+  }
+
+  /**
+   * Adds translation asset paths
+   */
+  public addTranslationPaths(paths: TranslationAssetPaths): void {
+    Object.entries(paths).forEach(([key, value]) => this.translationAssetPaths.set(key, value));
   }
 
   public setLanguage(language: string): void {
@@ -167,7 +180,7 @@ export class LazyTranslateService {
    * Downloads a language file for a given namespace
    */
   private downloadFile(language: string, namespace: string): Observable<Record<string, unknown> | undefined> {
-    const path = this.config.translationAssetPaths[`${language}.${namespace}`];
+    const path = this.translationAssetPaths.get(`${language}.${namespace}`);
 
     if (!path) {
       if (this.config.missingFileHandler) {
@@ -175,6 +188,8 @@ export class LazyTranslateService {
       } else if (this.config.enableLogging) {
         console.error(`File with namespace ${namespace} not found for language ${language}`);
       }
+
+      return of(undefined);
     }
 
     let observable = this.downloadedRequests[path];
