@@ -7,6 +7,7 @@ export interface LazyTranslateModuleConfig {
   languages: Language[];
   defaultLanguage: string;
   translationAssetPaths?: TranslationAssetPaths;
+  preload?: boolean;
   useDefaultLanguage?: boolean;
   enableLogging?: boolean;
   missingTranslationHandler?: MissingTranslationHandlerFn;

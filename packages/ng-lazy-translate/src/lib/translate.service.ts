@@ -57,7 +57,7 @@ export class LazyTranslateService {
     this.config = { useDefaultLanguage: true, enableLogging: true, ...config };
 
     if (this.config.translationAssetPaths) {
-      this.addTranslationPaths(this.config.translationAssetPaths);
+      this.addTranslationPaths(this.config.translationAssetPaths, this.config.preload);
     }
 
     this.defaultLanguage$ = new BehaviorSubject<string>(this.config.defaultLanguage);
@@ -82,8 +82,17 @@ export class LazyTranslateService {
   /**
    * Adds translation asset paths
    */
-  public addTranslationPaths(paths: TranslationAssetPaths): void {
-    Object.entries(paths).forEach(([key, value]) => this.translationAssetPaths.set(key, value));
+  public addTranslationPaths(paths: TranslationAssetPaths, preload?: boolean): void {
+    Object.entries(paths).forEach(([key, value]) => {
+      this.translationAssetPaths.set(key, value);
+      if (preload) {
+        const [language, namespace] = key.split('.');
+
+        if (language === this.language$.getValue()) {
+          this.downloadFile(language, namespace);
+        }
+      }
+    });
   }
 
   public setLanguage(language: string): void {
