@@ -157,22 +157,17 @@ You can dynamically add translation asset paths by calling the `addTranslationAs
 ```typescript
 import { LazyTranslateService } from '@qntm-code/ng-lazy-translate';
 
-export const appRoutes: Route[] = [
-  {
-    path: '',
-    loadChildren: () =>
-      import('./home/home.module').then(({ HomeModule }) => {
-        const translateService = inject(LazyTranslateService);
+@Injectable()
+export class MyService {
+  private readonly translateService = inject(LazyTranslateService);
 
-        translateService.addTranslationAssetPaths({
-          'en.home': 'assets/i18n/en/home.json',
-          'fr.home': 'assets/i18n/fr/home.json',
-        });
-
-        return HomeModule;
-      }),
-  },
-];
+  constructor() {
+    this.translateService.addTranslationAssetPaths({
+      'en.home': 'assets/i18n/en/home.json',
+      'fr.home': 'assets/i18n/fr/home.json',
+    });
+  }
+}
 ```
 
 ## LazyTranslateModuleConfig
