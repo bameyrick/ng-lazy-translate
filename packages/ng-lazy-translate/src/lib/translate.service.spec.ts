@@ -229,4 +229,21 @@ describe(`LazyTranslateService`, () => {
       expect(result).toEqual({ test: 'test' });
     });
   });
+
+  describe('addTranslationPaths', () => {
+    it('should preload the translations if preload is true', () => {
+      const downloadFileSpy = jest.spyOn(service as never, 'downloadFile');
+
+      service.addTranslationPaths(
+        {
+          'en.common': 'assets/i18n/en/common.json',
+          'cy.common': 'assets/i18n/cy/common.json',
+        },
+        true
+      );
+
+      expect(downloadFileSpy).toHaveBeenCalledWith('en', 'common');
+      expect(downloadFileSpy).not.toHaveBeenCalledWith('cy', 'common');
+    });
+  });
 });

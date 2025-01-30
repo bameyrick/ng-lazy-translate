@@ -152,7 +152,7 @@ export class MyService {
 
 ## Dynamically adding translation asset paths
 
-You can dynamically add translation asset paths by calling the `addTranslationAssetPaths` method on the `LazyTranslateService`:
+You can dynamically add translation asset paths by calling the `addTranslationPaths` method on the `LazyTranslateService`:
 
 ```typescript
 import { LazyTranslateService } from '@qntm-code/ng-lazy-translate';
@@ -162,12 +162,24 @@ export class MyService {
   private readonly translateService = inject(LazyTranslateService);
 
   constructor() {
-    this.translateService.addTranslationAssetPaths({
+    this.translateService.addTranslationPaths({
       'en.home': 'assets/i18n/en/home.json',
       'fr.home': 'assets/i18n/fr/home.json',
     });
   }
 }
+```
+
+You can also preload all the translation files in the current language by adding the `preload` paramater to the call:
+
+```typescript
+this.translateService.addTranslationPaths(
+  {
+    'en.home': 'assets/i18n/en/home.json',
+    'fr.home': 'assets/i18n/fr/home.json',
+  },
+  true
+);
 ```
 
 ## LazyTranslateModuleConfig
@@ -179,6 +191,7 @@ Whether you use the standalone components or the module, the LazyTranslateModule
 | defaultLanguage           | string                                          | The default language to use if no language is specified                                                           | Yes       | N/A                          |
 | languages                 | [Language[]](#language)                         | The list of languages to support                                                                                  | Yes       | N/A                          |
 | translationAssetPaths     | [TranslationAssetPaths](#translationassetpaths) | The list of translation assets to load. The key is the language and the translation file name.                    | No        | N/A                          |
+| preload                   | boolean                                         | Whether to preload all the translation files in the current language.                                             | No        | `false`                      |
 | useDefaultLanguage        | boolean                                         | Whether to use the default language if the specified language is not found                                        | No        | `true`                       |
 | enableLogging             | boolean                                         | Whether to enable logging of missing translations                                                                 | No        | `true`                       |
 | missingTranslationHandler | (language: string, key: string) => void         | A custom handler to use when a translation is not found. If not specified, the default handler will be used.      | No        | Will console.error a message |
