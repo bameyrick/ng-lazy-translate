@@ -12,6 +12,22 @@ Lazy loaded translation module for Angular using [messageformat](https://message
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=bameyrick_ng-lazy-translate&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=bameyrick_ng-lazy-translate)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=bameyrick_ng-lazy-translate&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=bameyrick_ng-lazy-translate)
 
+- [@qntm-code/ng-lazy-translate](#qntm-codeng-lazy-translate)
+  - [Installation](#installation)
+  - [Usage - Standalone Components](#usage---standalone-components)
+    - [1. Create providers](#1-create-providers)
+  - [Usage - Within a Module](#usage---within-a-module)
+    - [1. Import Module](#1-import-module)
+    - [2. Import module in component](#2-import-module-in-component)
+  - [Using pipe in a template](#using-pipe-in-a-template)
+  - [Using the service in a component/service](#using-the-service-in-a-componentservice)
+  - [Dynamically adding translation asset paths](#dynamically-adding-translation-asset-paths)
+  - [LazyTranslateModuleConfig](#lazytranslatemoduleconfig)
+  - [Language](#language)
+  - [TranslationAssetPaths](#translationassetpaths)
+  - [Translation files](#translation-files)
+  - [Default value](#default-value)
+
 ## Installation
 
 ```bash
@@ -134,6 +150,31 @@ export class MyService {
 }
 ```
 
+## Dynamically adding translation asset paths
+
+You can dynamically add translation asset paths by calling the `addTranslationAssetPaths` method on the `LazyTranslateService`:
+
+```typescript
+import { LazyTranslateService } from '@qntm-code/ng-lazy-translate';
+
+export const appRoutes: Route[] = [
+  {
+    path: '',
+    loadChildren: () =>
+      import('./home/home.module').then(({ HomeModule }) => {
+        const translateService = inject(LazyTranslateService);
+
+        translateService.addTranslationAssetPaths({
+          'en.home': 'assets/i18n/en/home.json',
+          'fr.home': 'assets/i18n/fr/home.json',
+        });
+
+        return HomeModule;
+      }),
+  },
+];
+```
+
 ## LazyTranslateModuleConfig
 
 Whether you use the standalone components or the module, the LazyTranslateModuleConfig options are the same.
@@ -142,7 +183,7 @@ Whether you use the standalone components or the module, the LazyTranslateModule
 | ------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | --------- | ---------------------------- |
 | defaultLanguage           | string                                          | The default language to use if no language is specified                                                           | Yes       | N/A                          |
 | languages                 | [Language[]](#language)                         | The list of languages to support                                                                                  | Yes       | N/A                          |
-| translationAssetPaths     | [TranslationAssetPaths](#translationassetpaths) | The list of translation assets to load. The key is the language and the translation file name.                    | Yes       | N/A                          |
+| translationAssetPaths     | [TranslationAssetPaths](#translationassetpaths) | The list of translation assets to load. The key is the language and the translation file name.                    | No        | N/A                          |
 | useDefaultLanguage        | boolean                                         | Whether to use the default language if the specified language is not found                                        | No        | `true`                       |
 | enableLogging             | boolean                                         | Whether to enable logging of missing translations                                                                 | No        | `true`                       |
 | missingTranslationHandler | (language: string, key: string) => void         | A custom handler to use when a translation is not found. If not specified, the default handler will be used.      | No        | Will console.error a message |
