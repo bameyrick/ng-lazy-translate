@@ -5,28 +5,28 @@ import { LazyTranslateService } from '../translate.service';
 
 @Pipe({ name: 'translate', pure: false })
 export class LazyTranslatePipe implements PipeTransform, OnDestroy {
-  private readonly translateService = inject(LazyTranslateService);
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  protected readonly translateService = inject(LazyTranslateService);
+  protected readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   /**
    * The value to return
    */
-  private value?: string;
+  protected value?: string;
 
   /**
    * Subscription to the translation, this might change if the user changes their language or the default language is changed
    */
-  private translationSubscription?: Subscription;
+  protected translationSubscription?: Subscription;
 
   /**
    * An observable of the params provided from the transform
    */
-  private readonly params$ = new Subject<{ key?: string | null; interpolateParams?: Dictionary<unknown>; defaultValue?: string }>();
+  protected readonly params$ = new Subject<{ key?: string | null; interpolateParams?: Dictionary<unknown>; defaultValue?: string }>();
 
   /**
    * Handle the params being updated
    */
-  private readonly paramsSubscription = this.params$
+  protected readonly paramsSubscription = this.params$
     .pipe(distinctUntilChanged((previous, next) => isEqual(previous, next)))
     .subscribe(({ key, interpolateParams, defaultValue }) => {
       this.unsubscribe();
@@ -76,7 +76,7 @@ export class LazyTranslatePipe implements PipeTransform, OnDestroy {
     return this.value;
   }
 
-  private unsubscribe(): void {
+  protected unsubscribe(): void {
     if (this.translationSubscription) {
       this.translationSubscription.unsubscribe();
     }
