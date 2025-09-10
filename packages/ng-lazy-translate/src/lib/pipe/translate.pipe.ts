@@ -3,7 +3,11 @@ import { Dictionary, isEqual, isNullOrUndefined, isObject, isString } from '@qnt
 import { distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import { LazyTranslateService } from '../translate.service';
 
-@Pipe({ name: 'translate', pure: false })
+@Pipe({
+  name: 'translate',
+  pure: false,
+  standalone: false,
+})
 export class LazyTranslatePipe implements PipeTransform, OnDestroy {
   protected readonly translateService = inject(LazyTranslateService);
   protected readonly changeDetectorRef = inject(ChangeDetectorRef);

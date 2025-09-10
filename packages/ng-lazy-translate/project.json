@@ -11,7 +11,6 @@
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "project": "packages/ng-lazy-translate/ng-package.json",
-        "updateBuildableProjectDepsInPackageJson": true,
         "tsConfig": "packages/ng-lazy-translate/tsconfig.lib.json"
       },
       "configurations": {
