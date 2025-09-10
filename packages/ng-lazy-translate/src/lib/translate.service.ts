@@ -1,12 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { inject, Injectable, Injector } from '@angular/core';
 import { TranslationKeyStore, TranslationValue } from '@qntm-code/translation-key-store';
 import { isEqual, isNullOrUndefined, isObject, isString } from '@qntm-code/utils';
 import {
   BehaviorSubject,
-  NEVER,
-  Observable,
-  Subscription,
   catchError,
   combineLatest,
   concatMap,
@@ -16,9 +13,12 @@ import {
   from,
   map,
   mergeMap,
+  NEVER,
+  Observable,
   of,
   pairwise,
   shareReplay,
+  Subscription,
   withLatestFrom,
 } from 'rxjs';
 import { LazyTranslateModuleConfig, TranslationAssetPaths } from './models';
@@ -26,6 +26,9 @@ import { NG_LAZY_TRANSLATE_CONFIG } from './tokens';
 
 @Injectable()
 export class LazyTranslateService {
+  private readonly injector = inject(Injector);
+  private readonly http = inject(HttpClient);
+
   /**
    * The current language
    */
@@ -53,8 +56,8 @@ export class LazyTranslateService {
 
   private readonly translationAssetPaths = new Map<string, string>();
 
-  constructor(@Inject(NG_LAZY_TRANSLATE_CONFIG) config: LazyTranslateModuleConfig, private readonly http: HttpClient) {
-    this.config = { useDefaultLanguage: true, enableLogging: true, ...config };
+  constructor() {
+    this.config = { useDefaultLanguage: true, enableLogging: true, ...this.injector.get(NG_LAZY_TRANSLATE_CONFIG) };
 
     if (this.config.translationAssetPaths) {
       this.addTranslationPaths(this.config.translationAssetPaths, this.config.preload);

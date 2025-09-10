@@ -1,10 +1,13 @@
-import { ChangeDetectorRef, OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import { ChangeDetectorRef, inject, OnDestroy, Pipe, PipeTransform } from '@angular/core';
 import { Dictionary, isEqual, isNullOrUndefined, isObject, isString } from '@qntm-code/utils';
-import { Subject, Subscription, distinctUntilChanged } from 'rxjs';
+import { distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import { LazyTranslateService } from '../translate.service';
 
 @Pipe({ name: 'translate', pure: false })
 export class LazyTranslatePipe implements PipeTransform, OnDestroy {
+  private readonly translateService = inject(LazyTranslateService);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
   /**
    * The value to return
    */
@@ -35,8 +38,6 @@ export class LazyTranslatePipe implements PipeTransform, OnDestroy {
       });
     });
 
-  constructor(private readonly translateService: LazyTranslateService, private readonly changeDetectorRef: ChangeDetectorRef) {}
-
   public ngOnDestroy(): void {
     this.unsubscribe();
 
@@ -62,7 +63,7 @@ export class LazyTranslatePipe implements PipeTransform, OnDestroy {
 
         try {
           interpolateParams = JSON.parse(validArgs);
-        } catch (error) {
+        } catch (_error) {
           defaultValue = params;
         }
       } else if (isObject(args[0]) && !Array.isArray(args[0])) {

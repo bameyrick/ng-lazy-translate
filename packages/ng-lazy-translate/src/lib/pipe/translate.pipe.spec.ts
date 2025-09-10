@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChangeDetectorRef } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { createMock } from '@golevelup/ts-jest';
 import { Dictionary } from '@qntm-code/utils';
 import { of } from 'rxjs';
@@ -10,11 +11,23 @@ describe(`LazyTranslatePipe`, () => {
   let pipe: LazyTranslatePipe;
 
   beforeEach(() => {
-    pipe = new LazyTranslatePipe(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      createMock<LazyTranslateService>({ translate: (key?: string | null, _interpolateParams?: Dictionary<unknown>) => of(`${key}`) }),
-      createMock<ChangeDetectorRef>()
-    );
+    TestBed.configureTestingModule({
+      providers: [
+        LazyTranslatePipe,
+        {
+          provide: LazyTranslateService,
+          useValue: createMock<LazyTranslateService>({
+            translate: (key?: string | null, _interpolateParams?: Dictionary<unknown>) => of(`${key}`),
+          }),
+        },
+        {
+          provide: ChangeDetectorRef,
+          useValue: createMock<ChangeDetectorRef>(),
+        },
+      ],
+    });
+
+    pipe = TestBed.inject(LazyTranslatePipe);
   });
 
   it(`creates an instance`, () => {
