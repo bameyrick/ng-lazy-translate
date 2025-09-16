@@ -48,7 +48,7 @@ export class LazyTranslatePipe implements PipeTransform, OnDestroy {
     this.paramsSubscription.unsubscribe();
   }
 
-  public transform(key?: string | null, ...args: Array<Dictionary<unknown> | string>): string | undefined {
+  public transform(key?: string | null, ...args: Array<Dictionary<unknown> | string | undefined>): string | undefined {
     let interpolateParams: Dictionary<unknown> | undefined;
     let defaultValue: string | undefined;
 
