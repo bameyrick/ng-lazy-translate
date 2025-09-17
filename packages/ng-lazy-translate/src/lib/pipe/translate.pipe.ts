@@ -39,6 +39,7 @@ export class LazyTranslatePipe implements PipeTransform, OnDestroy {
         this.value = value;
 
         this.changeDetectorRef.detectChanges();
+        this.changeDetectorRef.markForCheck();
       });
     });
 
