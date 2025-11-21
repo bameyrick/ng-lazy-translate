@@ -162,7 +162,7 @@ export class MyService {
   private readonly translateService = inject(LazyTranslateService);
 
   constructor() {
-    this.translateService.addTranslationPaths({
+    void this.translateService.addTranslationPaths({
       'en.home': 'assets/i18n/en/home.json',
       'fr.home': 'assets/i18n/fr/home.json',
     });
@@ -173,7 +173,7 @@ export class MyService {
 You can also preload all the translation files in the current language by adding the `preload` paramater to the call:
 
 ```typescript
-this.translateService.addTranslationPaths(
+await this.translateService.addTranslationPaths(
   {
     'en.home': 'assets/i18n/en/home.json',
     'fr.home': 'assets/i18n/fr/home.json',
