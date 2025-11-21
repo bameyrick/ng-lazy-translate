@@ -85,17 +85,22 @@ export class LazyTranslateService {
   /**
    * Adds translation asset paths
    */
-  public addTranslationPaths(paths: TranslationAssetPaths, preload?: boolean): void {
-    Object.entries(paths).forEach(([key, value]) => {
-      this.translationAssetPaths.set(key, value);
-      if (preload) {
-        const [language, namespace] = key.split('.');
+  public async addTranslationPaths(paths: TranslationAssetPaths, preload?: boolean): Promise<void> {
+    await Promise.all(
+      Object.entries(paths).map(([key, value]) => {
+        this.translationAssetPaths.set(key, value);
 
-        if (language === this.language$.getValue()) {
-          this.downloadFile(language, namespace);
+        if (preload) {
+          const [language, namespace] = key.split('.');
+
+          if (language === this.language$.getValue()) {
+            return firstValueFrom(this.downloadFile(language, namespace));
+          }
         }
-      }
-    });
+
+        return Promise.resolve();
+      })
+    );
   }
 
   public setLanguage(language: string): void {
