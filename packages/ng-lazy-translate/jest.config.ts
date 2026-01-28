@@ -1,7 +1,7 @@
-/* eslint-disable */
 export default {
   displayName: 'ng-lazy-translate',
   preset: '../../jest.preset.js',
+  testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: '../../coverage/packages/ng-lazy-translate',
   transform: {
