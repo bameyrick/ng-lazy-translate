@@ -18,6 +18,7 @@ import {
   of,
   pairwise,
   shareReplay,
+  Subject,
   Subscription,
   withLatestFrom,
 } from 'rxjs';
@@ -56,12 +57,11 @@ export class LazyTranslateService {
 
   private readonly translationAssetPaths = new Map<string, string>();
 
+  private readonly initialised$ = new Subject<void>();
+  private readonly initialised = firstValueFrom(this.initialised$);
+
   constructor() {
     this.config = { useDefaultLanguage: true, enableLogging: true, ...this.injector.get(NG_LAZY_TRANSLATE_CONFIG) };
-
-    if (this.config.translationAssetPaths) {
-      this.addTranslationPaths(this.config.translationAssetPaths, this.config.preload);
-    }
 
     this.defaultLanguage$ = new BehaviorSubject<string>(this.config.defaultLanguage);
 
@@ -80,6 +80,16 @@ export class LazyTranslateService {
     if (this.config.enableLogging) {
       this.language$.subscribe(language => console.log(`Current language: ${language}`));
     }
+
+    void this.initialise();
+  }
+
+  private async initialise(): Promise<void> {
+    if (this.config.translationAssetPaths) {
+      await this.addTranslationPaths(this.config.translationAssetPaths, this.config.preload);
+    }
+
+    this.initialised$.next();
   }
 
   /**
@@ -181,6 +191,8 @@ export class LazyTranslateService {
    * Downloads a namespace for a given language, and if found it will store it. Returns a boolean denoting whether the file was found
    */
   private async getNamespaceForLanguage(language: string, namespace: string): Promise<boolean> {
+    await this.initialised;
+
     const result = await firstValueFrom(this.downloadFile(language, namespace));
 
     if (result) {
